@@ -1,4 +1,4 @@
-package com.samz.banquemisr.challenge05.ui.theme
+package com.samz.banquemisr.challenge05.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

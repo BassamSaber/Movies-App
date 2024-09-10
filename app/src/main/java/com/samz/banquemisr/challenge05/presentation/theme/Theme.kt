@@ -1,4 +1,4 @@
-package com.samz.banquemisr.challenge05.ui.theme
+package com.samz.banquemisr.challenge05.presentation.theme
 
 import android.app.Activity
 import android.os.Build
