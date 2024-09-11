@@ -5,7 +5,7 @@ import com.samz.banquemisr.challenge05.domain.model.Movie
 
 interface MoviesRepository {
 
-    suspend fun getMovies(moviesType: MoviesType, pageNo: Int): Result<List<Movie>>
+    suspend fun getMovies(moviesType: MoviesType): Result<List<Movie>>
 
     suspend fun getMovieDetails(movieId: Int): Result<Movie?>
 
