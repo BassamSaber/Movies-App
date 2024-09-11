@@ -1,8 +1,12 @@
 package com.samz.banquemisr.challenge05.data.remote.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity("movies")
 data class MovieDto(
+    @PrimaryKey(autoGenerate = false)
     @SerializedName("id")
     val id: Int,
     @SerializedName("title")
