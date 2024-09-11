@@ -39,9 +39,10 @@ class CachesLifeManager @Inject constructor(app: Application) {
         return lastFetch > currentDate
     }
 
-    private fun generateCache(key: String = "", lifeTime: Long = 0L) = preferences.edit().apply {
-        putLong(key, getCurrentDate() + lifeTime)
-    }.apply()
+    private fun generateCache(key: String = "", lifeTime: Long = 0L) =
+        preferences.edit().apply {
+            putLong(key, getCurrentDate() + lifeTime)
+        }.apply()
 
     fun generateMovieDetailsCache(movieId: Int) {
         val movieKey = "$MOVIE_DETAILS_CACHE$movieId"
@@ -67,5 +68,9 @@ class CachesLifeManager @Inject constructor(app: Application) {
 
         MoviesType.NowPlaying ->
             generateCache(MOVIES_LIST_NO_PLAYING_KEY, MOVIES_LIST_NO_PLAYING_LIFE_TIME)
+    }
+
+    fun clearCache() {
+        preferences.edit().clear().apply()
     }
 }

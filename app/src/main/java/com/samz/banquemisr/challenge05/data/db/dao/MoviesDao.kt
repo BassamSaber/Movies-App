@@ -15,7 +15,7 @@ interface MoviesDao {
     suspend fun createOrUpdate(movie: MovieDto)
 
     @Query("SELECT * FROM movies WHERE id=:id")
-    suspend fun getMovieDetails(id: Int): MovieDto
+    suspend fun getMovieDetails(id: Int): MovieDto?
 
     @Query("SELECT * FROM movies WHERE id IN (:ids)")
     suspend fun getMoviesByIds(ids: List<Int>): List<MovieDto>

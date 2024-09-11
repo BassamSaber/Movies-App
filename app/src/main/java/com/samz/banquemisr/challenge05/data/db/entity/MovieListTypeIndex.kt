@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class MovieListTypeIndex(
     @PrimaryKey(autoGenerate = false)
     val id: Int = 0,
-    val movies: List<Int> = emptyList()
+    val moviesIds: List<Int> = emptyList()
 )

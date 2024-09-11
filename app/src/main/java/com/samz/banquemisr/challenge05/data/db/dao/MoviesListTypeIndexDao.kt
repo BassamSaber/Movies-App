@@ -18,7 +18,7 @@ interface MoviesListTypeIndexDao {
      * The integer is retrieved from the [MoviesType] enum class ordinal value.
      */
     @Query("SELECT * FROM movie_list_index WHERE id == :type")
-    suspend fun getListIndex(type: Int): List<MovieListTypeIndex>
+    suspend fun getListIndex(type: Int): MovieListTypeIndex
 
     @Delete
     suspend fun delete(movieIndex: MovieListTypeIndex)
