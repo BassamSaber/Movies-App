@@ -15,7 +15,7 @@ object IntListTypeConverter {
      */
     @JvmStatic
     @TypeConverter
-    fun fromIntList(list: ArrayList<Int>?): String {
+    fun fromIntList(list: List<Int>?): String {
         return Gson().toJson(list)
     }
 
@@ -27,8 +27,8 @@ object IntListTypeConverter {
      */
     @JvmStatic
     @TypeConverter
-    fun toIntList(value: String): ArrayList<Int>? {
-        val listType: Type = object : TypeToken<ArrayList<Int>?>() {}.type
+    fun toIntList(value: String): List<Int>? {
+        val listType: Type = object : TypeToken<List<Int>?>() {}.type
         return Gson().fromJson(value, listType)
     }
 }

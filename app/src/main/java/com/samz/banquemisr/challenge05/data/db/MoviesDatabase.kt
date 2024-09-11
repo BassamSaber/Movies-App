@@ -12,7 +12,8 @@ import com.samz.banquemisr.challenge05.data.remote.model.MovieDto
 
 @Database(
     entities = [MovieDto::class, MovieListTypeIndex::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 @TypeConverters(IntListTypeConverter::class, MovieGenreTypeConverter::class)
 abstract class MoviesDatabase : RoomDatabase() {
