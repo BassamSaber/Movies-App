@@ -17,6 +17,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.samz.banquemisr.challenge05.R
+import com.samz.banquemisr.challenge05.core.MoviesType
 import com.samz.banquemisr.challenge05.presentation.DataState
 import com.samz.banquemisr.challenge05.presentation.components.EmptyScreen
 import com.samz.banquemisr.challenge05.presentation.components.ErrorScreen
@@ -43,7 +48,10 @@ fun HomeScreen(
     state: DataState<HomeData>,
     onMoviesEvent: (MovieIntent) -> Unit,
     navigateToDetails: (movieId: Int) -> Unit = { _ -> },
+    navigateMoviesList: (movieType: Int) -> Unit = { _ -> },
 ) {
+    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
+
     if (appState.openDialog) {
         SelectThemeDialog(stateApp = appState, onEvent = onMainEvent, setShowDialog = {
             onMainEvent(MainEvent.OpenDialog(it))
@@ -90,7 +98,9 @@ fun HomeScreen(
                 })
 
                 TabRow(
-                    onTabSelected = { intent ->
+                    selectedTabIndex = selectedTabIndex,
+                    onTabSelected = { intent, index ->
+                        selectedTabIndex = index
                         onMoviesEvent(intent)
                     }
                 )
@@ -118,9 +128,19 @@ fun HomeScreen(
 
                     Column {
                         HomeCarousel(state.data?.banners ?: emptyList())
-                        HorizontalMoviesList(movies = state.data?.movies ?: emptyList(),
+                        HorizontalMoviesList(
+                            movies = state.data?.movies ?: emptyList(),
                             onItemClick = { movieId ->
                                 navigateToDetails.invoke(movieId)
+                            },
+                            onViewAllClick = {
+                                navigateMoviesList.invoke(
+                                    (when (selectedTabIndex) {
+                                        0 -> MoviesType.NowPlaying
+                                        1 -> MoviesType.Popular
+                                        else -> MoviesType.Upcoming
+                                    }).ordinal
+                                )
                             })
                     }
                 }

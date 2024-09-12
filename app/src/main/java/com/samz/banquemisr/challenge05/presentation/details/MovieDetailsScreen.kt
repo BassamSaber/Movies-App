@@ -249,7 +249,8 @@ fun MovieDetailsScreen(
                                 .padding(start = 14.dp)
                         )
                     if (state.data.recommendationsList.isNotEmpty())
-                        HorizontalMoviesList(movies = state.data.recommendationsList,
+                        HorizontalMoviesList(
+                            movies = state.data.recommendationsList,
                             onItemClick = { movieId ->
                                 navigate.invoke(movieId)
                             })
