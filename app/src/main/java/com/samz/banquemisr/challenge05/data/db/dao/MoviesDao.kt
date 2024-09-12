@@ -18,7 +18,7 @@ interface MoviesDao {
     suspend fun getMovieDetails(id: Int): MovieDto?
 
     @Query("SELECT * FROM movies WHERE id IN (:ids)")
-    suspend fun getMoviesByIds(ids: List<Int>): List<MovieDto>
+    suspend fun getMoviesByIds(ids: List<Int>): List<MovieDto>?
 
     @Query("DELETE FROM movies")
     suspend fun clearAll()
