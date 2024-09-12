@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +50,7 @@ fun HomeScreen(
         }, returnValue = {})
     }
 
-    LaunchedEffect(MovieIntent.LoadNowPlaying) {
+    LaunchedEffect(Unit) {
         onMoviesEvent(MovieIntent.LoadNowPlaying)
     }
 
@@ -107,9 +108,10 @@ fun HomeScreen(
                         color = Color.Red,
                         modifier = Modifier
                             .align(Alignment.Center)
+                            .testTag("Loading"),
                     )
                 } else if (state.error != null) {
-                    ErrorScreen()
+                    ErrorScreen(errorMsg = state.error)
                 } else if (state.isEmpty) {
                     EmptyScreen()
                 } else {
