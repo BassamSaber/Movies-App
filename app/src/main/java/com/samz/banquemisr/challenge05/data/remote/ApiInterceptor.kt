@@ -6,16 +6,16 @@ import java.util.Locale
 
 class ApiInterceptor(private val token: String) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val newRequest = chain.request()
-        val updatedUrl = newRequest.url.newBuilder().apply {
+        val request = chain.request()
+        val updatedUrl = request.url.newBuilder().apply {
             addQueryParameter("language", getLanguage())
         }.build()
-        newRequest.newBuilder().apply {
+        val newRequest = request.newBuilder().apply {
             addHeader("Authorization", "Bearer $token")
             addHeader("accept", "application/json")
             url(updatedUrl)
-        }.build()
-        return chain.proceed(newRequest)
+        }
+        return chain.proceed(newRequest.build())
     }
 
     private fun getLanguage() = Locale.getDefault().run {
