@@ -31,45 +31,65 @@ class RemoteDataSourceImpl @Inject constructor(
 
 
     private suspend fun getNowPlayingMovies(pageNo: Int): Result<MoviesListDto> {
-        val response = apiService.getNowPlayingMovies(pageNo)
-        if (response.isSuccessful)
-            return Result.success(response.body()!!)
+        try {
+            val response = apiService.getNowPlayingMovies(pageNo)
+            if (response.isSuccessful)
+                return Result.success(response.body()!!)
 
-        return handleFailure(response)
+            return handleFailure(response)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 
     private suspend fun getPopularMovies(pageNo: Int): Result<MoviesListDto> {
-        val response = apiService.getPopularMovies(pageNo)
-        if (response.isSuccessful)
-            return Result.success(response.body()!!)
+        try {
+            val response = apiService.getPopularMovies(pageNo)
+            if (response.isSuccessful)
+                return Result.success(response.body()!!)
 
-        return handleFailure(response)
+            return handleFailure(response)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 
     private suspend fun getUpcomingMovies(pageNo: Int): Result<MoviesListDto> {
-        val response = apiService.getUpcomingMovies(pageNo)
-        if (response.isSuccessful)
-            return Result.success(response.body()!!)
+        try {
+            val response = apiService.getUpcomingMovies(pageNo)
+            if (response.isSuccessful)
+                return Result.success(response.body()!!)
 
-        return handleFailure(response)
+            return handleFailure(response)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 
     override suspend fun getMovieDetails(movieId: Int): Result<MovieDto> {
-        val response = apiService.getMovieDetails(movieId)
-        if (response.isSuccessful)
-            return Result.success(response.body()!!)
+        try {
+            val response = apiService.getMovieDetails(movieId)
+            if (response.isSuccessful)
+                return Result.success(response.body()!!)
 
-        return handleFailure(response)
+            return handleFailure(response)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 
     override suspend fun getMovieRecommendations(
         movieId: Int,
         pageNo: Int
     ): Result<MoviesListDto> {
-        val response = apiService.getMovieRecommendations(movieId, pageNo)
-        if (response.isSuccessful)
-            return Result.success(response.body()!!)
+        try {
+            val response = apiService.getMovieRecommendations(movieId, pageNo)
+            if (response.isSuccessful)
+                return Result.success(response.body()!!)
 
-        return handleFailure(response)
+            return handleFailure(response)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 }
