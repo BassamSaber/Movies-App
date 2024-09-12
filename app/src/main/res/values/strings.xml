@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Movies App</string>
+    <string name="no_result_has_been_found">No Result has been found</string>
+    <string name="empty_data_image">empty data image</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="error_screen_image">error screen image</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="popular">Popular</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="recommendations">Recommendations</string>
+    <string name="overview">Overview</string>
+    <string name="users_score">Users Score</string>
 </resources>
