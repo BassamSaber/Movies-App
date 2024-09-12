@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,6 +29,7 @@ import com.samz.banquemisr.challenge05.R
 import com.samz.banquemisr.challenge05.presentation.DataState
 import com.samz.banquemisr.challenge05.presentation.components.EmptyScreen
 import com.samz.banquemisr.challenge05.presentation.components.ErrorScreen
+import com.samz.banquemisr.challenge05.presentation.components.SelectThemeDialog
 import com.samz.banquemisr.challenge05.presentation.components.TabRow
 import com.samz.banquemisr.challenge05.presentation.components.carsoule.HomeCarousel
 import com.samz.banquemisr.challenge05.presentation.list.HorizontalMoviesList
@@ -34,10 +37,17 @@ import com.samz.banquemisr.challenge05.presentation.list.HorizontalMoviesList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    appState: MainState,
+    onMainEvent: (MainEvent) -> Unit,
     state: DataState<HomeData>,
     onMoviesEvent: (MovieIntent) -> Unit,
     navigateToDetails: (movieId: Int) -> Unit = { _ -> },
 ) {
+    if (appState.openDialog) {
+        SelectThemeDialog(stateApp = appState, onEvent = onMainEvent, setShowDialog = {
+            onMainEvent(MainEvent.OpenDialog(it))
+        }, returnValue = {})
+    }
 
     LaunchedEffect(MovieIntent.LoadNowPlaying) {
         onMoviesEvent(MovieIntent.LoadNowPlaying)
@@ -62,6 +72,18 @@ fun HomeScreen(
                         Text(
                             text = stringResource(id = R.string.app_name),
                             fontWeight = FontWeight.Bold
+                        )
+                    }
+                }, actions = {
+                    IconButton(onClick = {
+                        onMainEvent(
+                            MainEvent.OpenDialog(true)
+                        )
+                    }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_theme_mode),
+                            modifier = Modifier.size(20.dp),
+                            contentDescription = "Theme change mode"
                         )
                     }
                 })
