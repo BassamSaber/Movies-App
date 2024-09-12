@@ -29,9 +29,12 @@ class LocalDataSourceImpl @Inject constructor(
         cachesLifeManager.generateListCache(moviesType)
     }
 
-    override suspend fun getMovies(moviesType: MoviesType): List<MovieDto> {
+    override suspend fun getMovies(moviesType: MoviesType): List<MovieDto>? {
         val moviesTypeIndex = moviesListTypeIndexDao.getListIndex(moviesType.ordinal)
-        return moviesDao.getMoviesByIds(moviesTypeIndex.moviesIds)
+        return if (moviesTypeIndex?.moviesIds.isNullOrEmpty()) {
+            emptyList()
+        } else
+            moviesDao.getMoviesByIds(moviesTypeIndex!!.moviesIds)
     }
 
     override suspend fun insertOrUpdateMovie(movie: MovieDto) {
