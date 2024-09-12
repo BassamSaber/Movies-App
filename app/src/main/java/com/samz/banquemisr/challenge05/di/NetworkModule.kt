@@ -1,8 +1,10 @@
 package com.samz.banquemisr.challenge05.di
 
+import android.app.Application
 import com.samz.banquemisr.challenge05.BuildConfig
 import com.samz.banquemisr.challenge05.data.remote.ApiInterceptor
 import com.samz.banquemisr.challenge05.data.remote.ApiService
+import com.samz.banquemisr.challenge05.data.remote.ConnectionInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,6 +14,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -44,17 +47,31 @@ object NetworkModule {
     fun provideApiInterceptor(): ApiInterceptor =
         ApiInterceptor(BuildConfig.AuthToken)
 
+    @Provides
+    @Singleton
+    fun provideConnectionInterceptor(application: Application): ConnectionInterceptor =
+        ConnectionInterceptor(application)
+
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(apiInterceptor: ApiInterceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        apiInterceptor: ApiInterceptor,
+        connectionInterceptor: ConnectionInterceptor
+    ): OkHttpClient {
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
 
         val okHttpClientBuilder = OkHttpClient().newBuilder()
+        okHttpClientBuilder.addInterceptor(connectionInterceptor)
         okHttpClientBuilder.addInterceptor(interceptor)
         okHttpClientBuilder.addInterceptor(apiInterceptor)
+
+        okHttpClientBuilder
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
 
         return okHttpClientBuilder.build()
     }
