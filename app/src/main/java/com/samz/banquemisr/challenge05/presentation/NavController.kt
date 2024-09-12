@@ -2,6 +2,7 @@ package com.samz.banquemisr.challenge05.presentation
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -10,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.samz.banquemisr.challenge05.presentation.details.MovieDetailsScreen
+import com.samz.banquemisr.challenge05.presentation.details.MovieDetailsViewModel
 import com.samz.banquemisr.challenge05.presentation.home.HomeScreen
 import com.samz.banquemisr.challenge05.presentation.home.HomeViewModel
 import com.samz.banquemisr.challenge05.presentation.home.MainViewModel
@@ -66,5 +69,19 @@ fun composeHomeScreen(themeChangeViewModel: MainViewModel, navController: NavCon
 
 @Composable
 fun composeMovieDetails(navController: NavController, arguments: Bundle?) {
+    val movieId = arguments?.getInt("movieId") ?: 0
+    val viewModel: MovieDetailsViewModel = hiltViewModel()
 
+    LaunchedEffect(movieId) {
+        viewModel.loadData(movieId = movieId)
+    }
+    MovieDetailsScreen(
+        viewModel.state.collectAsState().value,
+        navigate = { newMovieId ->
+            navController.navigate("${Screen.MovieDetailsScreen.name}/$newMovieId")
+        },
+        popBack = {
+            navController.popBackStack()
+        }
+    )
 }
