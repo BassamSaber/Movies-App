@@ -7,6 +7,7 @@ import com.samz.banquemisr.challenge05.domain.usecase.GetMoviesListUseCase
 import com.samz.banquemisr.challenge05.presentation.DataState
 import com.samz.banquemisr.challenge05.presentation.components.carsoule.getMoviesBanners
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -20,11 +21,11 @@ class HomeViewModel @Inject constructor(private val useCase: GetMoviesListUseCas
 
     val state: StateFlow<DataState<HomeData>> = mutableState
 
-    init {
-        loadData(MoviesType.NowPlaying)
-    }
+//    init {
+//        loadData(MoviesType.NowPlaying)
+//    }
 
-    private fun loadData(moviesType: MoviesType) {
+    fun loadData(moviesType: MoviesType): Job =
         viewModelScope.launch {
             mutableState.update { it.copy(isLoading = true) }
 
@@ -50,7 +51,7 @@ class HomeViewModel @Inject constructor(private val useCase: GetMoviesListUseCas
                     }
                 }
         }
-    }
+
 
     fun sendEvent(movieIntent: MovieIntent) {
         when (movieIntent) {

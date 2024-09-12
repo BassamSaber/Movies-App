@@ -5,5 +5,5 @@ import com.samz.banquemisr.challenge05.presentation.components.carsoule.Carousel
 
 data class HomeData(
     val movies: List<Movie>,
-    val banners: List<CarouselDataItem>
+    val banners: List<CarouselDataItem>? = null
 )

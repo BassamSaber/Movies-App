@@ -3,6 +3,8 @@ package com.samz.banquemisr.challenge05.helpers
 import com.samz.banquemisr.challenge05.data.mappers.toMovie
 import com.samz.banquemisr.challenge05.data.remote.model.MovieDto
 import com.samz.banquemisr.challenge05.data.remote.model.MoviesListDto
+import com.samz.banquemisr.challenge05.presentation.components.carsoule.toCarouselDataItem
+import com.samz.banquemisr.challenge05.presentation.home.HomeData
 
 val expectMovieDto = MovieDto(
     id = 1,
@@ -27,4 +29,5 @@ val expectedMovieDtoList = listOf(expectMovieDto)
 val expectMoviesListResultDto = MoviesListDto(expectedMovieDtoList, 1, 1, 1)
 
 val movieModel = expectMovieDto.toMovie()
-val expectRepositoryMovies = listOf(movieModel)
+val expectMoviesList = listOf(movieModel)
+val expectedHomeData = HomeData(expectMoviesList, expectMoviesList.map { it.toCarouselDataItem() })
