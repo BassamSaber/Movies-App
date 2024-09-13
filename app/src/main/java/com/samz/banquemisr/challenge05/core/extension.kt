@@ -1,12 +1,15 @@
 package com.samz.banquemisr.challenge05.core
 
+
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.runtime.Composable
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
 
 fun <T : Any> LazyGridScope.items(
     items: List<T>,
@@ -18,6 +21,22 @@ fun <T : Any> LazyGridScope.items(
         items.size,
 //        key = items.itemKey(key),
 //        contentType = items.itemContentType(contentType)
+    ) loop@{ i ->
+        val item = items[i] ?: return@loop
+        itemContent(item)
+    }
+}
+
+fun <T : Any> LazyGridScope.items(
+    items: LazyPagingItems<T>,
+    key: ((T) -> Any)? = null,
+    contentType: ((T) -> Any)? = null,
+    itemContent: @Composable LazyGridItemScope.(T) -> Unit
+) {
+    items(
+        items.itemCount,
+        key = items.itemKey(key),
+        contentType = items.itemContentType(contentType)
     ) loop@{ i ->
         val item = items[i] ?: return@loop
         itemContent(item)

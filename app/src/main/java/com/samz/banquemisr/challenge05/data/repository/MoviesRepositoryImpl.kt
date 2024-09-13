@@ -1,5 +1,10 @@
 package com.samz.banquemisr.challenge05.data.repository
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.samz.banquemisr.challenge05.core.MoviesType
 import com.samz.banquemisr.challenge05.data.datasource.LocaleDataSource
 import com.samz.banquemisr.challenge05.data.datasource.RemoteDataSource
@@ -7,12 +12,26 @@ import com.samz.banquemisr.challenge05.data.mappers.toMovie
 import com.samz.banquemisr.challenge05.data.remote.NoConnectionException
 import com.samz.banquemisr.challenge05.domain.model.Movie
 import com.samz.banquemisr.challenge05.domain.repository.MoviesRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class MoviesRepositoryImpl @Inject constructor(
+    private val remoteMediator: MoviesRemoteMediator,
     private val remoteDataSource: RemoteDataSource,
     private val localeDataSource: LocaleDataSource,
 ) : MoviesRepository {
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun moviesPagingSource(moviesType: MoviesType): Flow<PagingData<Movie>> {
+        remoteMediator.moviesType = moviesType
+        return Pager(
+            config = PagingConfig(pageSize = 20),
+            remoteMediator = remoteMediator,
+            pagingSourceFactory = { localeDataSource.moviesPagingSource(moviesType) }
+        ).flow.map { pagingData -> pagingData.map { it.toMovie() } }
+    }
+
     override suspend fun getMovies(moviesType: MoviesType): Result<List<Movie>> {
         try {
             return if (localeDataSource.checkMoviesCacheValidation(moviesType)) {
@@ -24,7 +43,12 @@ class MoviesRepositoryImpl @Inject constructor(
                 try {
                     val result = remoteDataSource.getMovies(moviesType, 1).getOrThrow()
                     result.movies?.let {
-                        localeDataSource.insetMovies(moviesType, it)
+                        localeDataSource.insetMovies(
+                            moviesType,
+                            result.pageNo,
+                            result.totalPages,
+                            it
+                        )
                     }
                     Result.success(result.movies?.map { it.toMovie() } ?: emptyList())
                 } catch (e: NoConnectionException) {
@@ -66,5 +90,10 @@ class MoviesRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+
+    override suspend fun clearAll() {
+        localeDataSource.clearAll()
     }
 }

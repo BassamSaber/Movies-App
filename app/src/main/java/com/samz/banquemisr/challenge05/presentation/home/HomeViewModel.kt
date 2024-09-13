@@ -36,6 +36,7 @@ class HomeViewModel @Inject constructor(private val useCase: GetMoviesListUseCas
                             isLoading = false,
                             isEmpty = moviesList.isEmpty(),
                             data = HomeData(
+                                moviesType = moviesType,
                                 movies = moviesList,
                                 banners = getMoviesBanners(moviesList)
                             )

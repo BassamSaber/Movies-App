@@ -3,6 +3,7 @@ package com.samz.banquemisr.challenge05.di
 import android.content.Context
 import androidx.room.Room
 import com.samz.banquemisr.challenge05.data.db.MoviesDatabase
+import com.samz.banquemisr.challenge05.data.db.dao.MovieTypePagingDao
 import com.samz.banquemisr.challenge05.data.db.dao.MoviesDao
 import com.samz.banquemisr.challenge05.data.db.dao.MoviesListTypeIndexDao
 import dagger.Module
@@ -22,8 +23,9 @@ object DatabaseModule {
         return Room.databaseBuilder(
             context,
             MoviesDatabase::class.java,
-            "repos.db"
-        ).build()
+            "movies.db"
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
@@ -35,5 +37,10 @@ object DatabaseModule {
     @Singleton
     fun provideMoviesListTypeIndexDao(database: MoviesDatabase): MoviesListTypeIndexDao =
         database.moviesListTypeIndexDao
+
+    @Provides
+    @Singleton
+    fun provideMovieTypePagingDao(database: MoviesDatabase): MovieTypePagingDao =
+        database.movieTypePagingDao
 
 }

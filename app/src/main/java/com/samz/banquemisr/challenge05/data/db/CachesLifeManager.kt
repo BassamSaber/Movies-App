@@ -11,9 +11,11 @@ import javax.inject.Inject
 
 class CachesLifeManager @Inject constructor(app: Application) {
     companion object {
+        private const val CACHES_VERSION = 2
         private const val FILE_NAME = "caches"
 
         /* Caches data keys */
+        private const val PREF_CACHE_VERSION = "cache_version"
         private const val MOVIE_DETAILS_CACHE = "movie_"
         private const val MOVIES_LIST_POPULAR_KEY = "movies_list_popular"
         private const val MOVIES_LIST_UPCOMING_KEY = "movies_list_upcoming"
@@ -30,6 +32,16 @@ class CachesLifeManager @Inject constructor(app: Application) {
     }
 
     private val preferences = app.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
+
+    private fun isCachesAvailable(): Boolean {
+        val cacheVersion = preferences.getInt(PREF_CACHE_VERSION, CACHES_VERSION)
+        if (cacheVersion < CACHES_VERSION) {
+            clearCache()
+            preferences.edit().putInt(PREF_CACHE_VERSION, CACHES_VERSION).apply()
+            return false
+        }
+        return true
+    }
 
     private fun getCurrentDate() = Calendar.getInstance(TimeZone.getDefault()).timeInMillis
 
@@ -50,13 +62,17 @@ class CachesLifeManager @Inject constructor(app: Application) {
     }
 
     fun movieCacheIsValid(movieId: Int) = "$MOVIE_DETAILS_CACHE$movieId".run {
+        if (!isCachesAvailable()) return false
         isCacheValid(this)
     }
 
-    fun listCacheIsValid(type: MoviesType) = when (type) {
-        MoviesType.Popular -> isCacheValid(MOVIES_LIST_POPULAR_KEY)
-        MoviesType.Upcoming -> isCacheValid(MOVIES_LIST_UPCOMING_KEY)
-        MoviesType.NowPlaying -> isCacheValid(MOVIES_LIST_NO_PLAYING_KEY)
+    fun listCacheIsValid(type: MoviesType): Boolean {
+        if (!isCachesAvailable()) return false
+        return when (type) {
+            MoviesType.Popular -> isCacheValid(MOVIES_LIST_POPULAR_KEY)
+            MoviesType.Upcoming -> isCacheValid(MOVIES_LIST_UPCOMING_KEY)
+            MoviesType.NowPlaying -> isCacheValid(MOVIES_LIST_NO_PLAYING_KEY)
+        }
     }
 
     fun generateListCache(type: MoviesType) = when (type) {

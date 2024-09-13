@@ -1,12 +1,14 @@
 package com.samz.banquemisr.challenge05.data.remote.model
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity("movies")
+@Entity(tableName = "movies", indices = [Index(value = ["id"], unique = true)])
 data class MovieDto(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val autoGenerateKey: Int = 0,
     @SerializedName("id")
     val id: Int,
     @SerializedName("title")
@@ -24,7 +26,7 @@ data class MovieDto(
 //    @SerializedName("genre_ids")
 //    val genreIds: List<Int>?,
     @SerializedName("genres")
-    val movieGenreDtos: List<MovieGenreDto>?,
+    val genres: List<MovieGenre>?,
     @SerializedName("overview")
     val overview: String? = "",
     @SerializedName("popularity")

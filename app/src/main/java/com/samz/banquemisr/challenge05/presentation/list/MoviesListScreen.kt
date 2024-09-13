@@ -17,43 +17,32 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.samz.banquemisr.challenge05.R
-import com.samz.banquemisr.challenge05.core.MoviesType
 import com.samz.banquemisr.challenge05.core.MoviesType.*
 import com.samz.banquemisr.challenge05.core.items
-import com.samz.banquemisr.challenge05.presentation.DataState
+import com.samz.banquemisr.challenge05.domain.model.Movie
 import com.samz.banquemisr.challenge05.presentation.components.EmptyScreen
 import com.samz.banquemisr.challenge05.presentation.components.ErrorScreen
-import com.samz.banquemisr.challenge05.presentation.home.HomeData
-import com.samz.banquemisr.challenge05.presentation.home.MovieIntent
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoviesListScreen(
-    moviesType: MoviesType,
     title: String,
-    state: DataState<HomeData>,
-    sendEvent: (MovieIntent) -> Unit,
+    lazyPagingItems: LazyPagingItems<Movie>,
     navigateToDetails: (movieId: Int) -> Unit = { _ -> },
     popBack: () -> Unit = {}
 ) {
-    LaunchedEffect(Unit) {
-        sendEvent(
-            when (moviesType) {
-                NowPlaying -> MovieIntent.LoadNowPlaying
-                Popular -> MovieIntent.LoadPopular
-                Upcoming -> MovieIntent.LoadUpcoming
-            }
-        )
-    }
+    val state = lazyPagingItems.loadState
+
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = title) }, navigationIcon = {
             IconButton(onClick = { popBack() }) {
@@ -66,24 +55,26 @@ fun MoviesListScreen(
     }) { paddingValues ->
         Surface(modifier = Modifier.padding(paddingValues)) {
             Box(modifier = Modifier.fillMaxSize()) {
-                if (state.isLoading) {
+                if (state.refresh is LoadState.Loading) {
                     CircularProgressIndicator(
                         color = Color.Red,
                         modifier = Modifier
                             .align(Alignment.Center)
                             .testTag("Loading"),
                     )
-                } else if (state.error != null) {
-                    ErrorScreen(errorMsg = state.error)
-                } else if (state.isEmpty) {
+                } else if (state.refresh is LoadState.Error) {
+                    ErrorScreen(errorMsg = (state.refresh as LoadState.Error).error.message)
+                    /*{
+                            lazyPagingItems.refresh()
+                        }*/
+                } else if (lazyPagingItems.itemCount == 0) {
                     EmptyScreen()
                 } else {
-                    val movies = state.data?.movies ?: emptyList()
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         contentPadding = PaddingValues(10.dp)
                     ) {
-                        items(movies) { movie ->
+                        items(lazyPagingItems) { movie ->
                             MovieItem(
                                 movie = movie,
                                 modifier = Modifier

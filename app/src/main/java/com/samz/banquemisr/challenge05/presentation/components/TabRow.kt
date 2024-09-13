@@ -11,12 +11,13 @@ import com.samz.banquemisr.challenge05.presentation.home.MovieIntent
 import com.samz.banquemisr.challenge05.presentation.theme.MoviesAppTheme
 
 @Composable
-fun TabRow(selectedTabIndex: Int = 0, onTabSelected: (MovieIntent, Int) -> Unit) {
+fun TabRow(selectedTabIndex: Int = 0, onTabSelected: (MovieIntent) -> Unit) {
     val tabs = listOf(
         stringResource(R.string.now_playing),
         stringResource(R.string.popular),
         stringResource(R.string.upcoming)
     )
+//    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
 
     TabRow(
         selectedTabIndex = selectedTabIndex
@@ -31,8 +32,7 @@ fun TabRow(selectedTabIndex: Int = 0, onTabSelected: (MovieIntent, Int) -> Unit)
                             0 -> MovieIntent.LoadNowPlaying
                             1 -> MovieIntent.LoadPopular
                             else -> MovieIntent.LoadUpcoming
-                        },
-                        index
+                        }
                     )
                 }
             )
@@ -45,6 +45,6 @@ fun TabRow(selectedTabIndex: Int = 0, onTabSelected: (MovieIntent, Int) -> Unit)
 @Composable
 fun previewTabs() {
     MoviesAppTheme {
-        TabRow(onTabSelected = { _, _ -> })
+        TabRow(onTabSelected = { _ -> })
     }
 }

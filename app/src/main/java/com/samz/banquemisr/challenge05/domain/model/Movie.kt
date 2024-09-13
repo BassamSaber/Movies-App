@@ -1,6 +1,6 @@
 package com.samz.banquemisr.challenge05.domain.model
 
-import com.samz.banquemisr.challenge05.data.remote.model.MovieGenreDto
+import com.samz.banquemisr.challenge05.data.remote.model.MovieGenre
 import java.util.Date
 
 data class Movie(
@@ -11,7 +11,7 @@ data class Movie(
     val posterImgUrl: String?,
     val backdropImgUrl: String?,
     val isAnAdult: Boolean,
-    val genres: List<MovieGenreDto>?,
+    val genres: List<MovieGenre>?,
     val overview: String? = "",
     val popularity: Double = 0.0,
     val releaseDate: Date?,

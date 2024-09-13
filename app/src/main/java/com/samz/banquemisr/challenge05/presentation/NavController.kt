@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.samz.banquemisr.challenge05.R
 import com.samz.banquemisr.challenge05.core.MoviesType
 import com.samz.banquemisr.challenge05.presentation.details.MovieDetailsScreen
@@ -19,7 +20,9 @@ import com.samz.banquemisr.challenge05.presentation.details.MovieDetailsViewMode
 import com.samz.banquemisr.challenge05.presentation.home.HomeScreen
 import com.samz.banquemisr.challenge05.presentation.home.HomeViewModel
 import com.samz.banquemisr.challenge05.presentation.home.MainViewModel
+import com.samz.banquemisr.challenge05.presentation.home.MovieIntent
 import com.samz.banquemisr.challenge05.presentation.list.MoviesListScreen
+import com.samz.banquemisr.challenge05.presentation.list.MoviesListViewModel
 import com.samz.banquemisr.challenge05.presentation.theme.MoviesAppTheme
 
 sealed class Screen(val name: String) {
@@ -70,6 +73,10 @@ fun NavController() {
 fun composeHomeScreen(themeChangeViewModel: MainViewModel, navController: NavController) {
     val viewModel: HomeViewModel = hiltViewModel()
 
+    LaunchedEffect(Unit) {
+        viewModel.sendEvent(MovieIntent.LoadNowPlaying)
+    }
+
     HomeScreen(
         appState = themeChangeViewModel.stateApp,
         onMainEvent = { event -> themeChangeViewModel.onEvent(event) },
@@ -107,10 +114,14 @@ fun composeMoviesList(navController: NavController, arguments: Bundle?) {
     val moviesTypeIndex = arguments?.getInt("moviesType") ?: 0
     val moviesType = MoviesType.values()[moviesTypeIndex]
 
-    val viewModel: HomeViewModel = hiltViewModel()
+    val viewModel: MoviesListViewModel = hiltViewModel()
+
+
+    LaunchedEffect(Unit) {
+        viewModel.loadMovies(moviesType)
+    }
 
     MoviesListScreen(
-        moviesType = moviesType,
         title = stringResource(
             id = when (moviesType) {
                 MoviesType.Popular -> R.string.popular
@@ -118,8 +129,7 @@ fun composeMoviesList(navController: NavController, arguments: Bundle?) {
                 MoviesType.NowPlaying -> R.string.now_playing
             }
         ),
-        state = viewModel.state.collectAsState().value,
-        sendEvent = { event -> viewModel.sendEvent(event) },
+        lazyPagingItems = viewModel.pagingResult.collectAsLazyPagingItems(),
         navigateToDetails = { newMovieId ->
             navController.navigate("${Screen.MovieDetailsScreen.name}/$newMovieId")
         },

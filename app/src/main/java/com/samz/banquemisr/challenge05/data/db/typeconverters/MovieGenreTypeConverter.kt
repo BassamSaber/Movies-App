@@ -3,7 +3,7 @@ package com.samz.banquemisr.challenge05.data.db.typeconverters
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.samz.banquemisr.challenge05.data.remote.model.MovieGenreDto
+import com.samz.banquemisr.challenge05.data.remote.model.MovieGenre
 import java.lang.reflect.Type
 
 
@@ -16,9 +16,9 @@ object MovieGenreTypeConverter {
      */
     @JvmStatic
     @TypeConverter
-    fun fromCountryDistrictsList(countryDistricts: List<MovieGenreDto>?): String? {
+    fun fromCountryDistrictsList(countryDistricts: List<MovieGenre>?): String? {
         val gson = Gson()
-        val type: Type = object : TypeToken<List<MovieGenreDto>?>() {}.type
+        val type: Type = object : TypeToken<List<MovieGenre>?>() {}.type
         return gson.toJson(countryDistricts, type)
     }
 
@@ -31,9 +31,9 @@ object MovieGenreTypeConverter {
      */
     @JvmStatic
     @TypeConverter
-    fun toCountryDistrictsList(value: String): List<MovieGenreDto>? {
+    fun toCountryDistrictsList(value: String): List<MovieGenre>? {
         val gson = Gson()
-        val type: Type = object : TypeToken<List<MovieGenreDto>?>() {}.type
-        return gson.fromJson<List<MovieGenreDto>>(value, type)
+        val type: Type = object : TypeToken<List<MovieGenre>?>() {}.type
+        return gson.fromJson<List<MovieGenre>>(value, type)
     }
 }

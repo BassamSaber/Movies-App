@@ -16,11 +16,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,16 +45,10 @@ fun HomeScreen(
     navigateToDetails: (movieId: Int) -> Unit = { _ -> },
     navigateMoviesList: (movieType: Int) -> Unit = { _ -> },
 ) {
-    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
-
     if (appState.openDialog) {
         SelectThemeDialog(stateApp = appState, onEvent = onMainEvent, setShowDialog = {
             onMainEvent(MainEvent.OpenDialog(it))
         }, returnValue = {})
-    }
-
-    LaunchedEffect(Unit) {
-        onMoviesEvent(MovieIntent.LoadNowPlaying)
     }
 
     Scaffold(
@@ -98,9 +87,13 @@ fun HomeScreen(
                 })
 
                 TabRow(
-                    selectedTabIndex = selectedTabIndex,
-                    onTabSelected = { intent, index ->
-                        selectedTabIndex = index
+                    selectedTabIndex = when (state.data?.moviesType) {
+                        MoviesType.NowPlaying -> 0
+                        MoviesType.Popular -> 1
+                        MoviesType.Upcoming -> 2
+                        else -> 0
+                    },
+                    onTabSelected = { intent ->
                         onMoviesEvent(intent)
                     }
                 )
@@ -134,13 +127,9 @@ fun HomeScreen(
                                 navigateToDetails.invoke(movieId)
                             },
                             onViewAllClick = {
-                                navigateMoviesList.invoke(
-                                    (when (selectedTabIndex) {
-                                        0 -> MoviesType.NowPlaying
-                                        1 -> MoviesType.Popular
-                                        else -> MoviesType.Upcoming
-                                    }).ordinal
-                                )
+                                state.data?.moviesType?.ordinal?.let {
+                                    navigateMoviesList(it)
+                                }
                             })
                     }
                 }

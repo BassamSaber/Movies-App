@@ -60,13 +60,14 @@ object NetworkModule {
         connectionInterceptor: ConnectionInterceptor
     ): OkHttpClient {
 
+        val okHttpClientBuilder = OkHttpClient().newBuilder()
+
+        okHttpClientBuilder.addInterceptor(connectionInterceptor)
+        okHttpClientBuilder.addInterceptor(apiInterceptor)
+
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
-
-        val okHttpClientBuilder = OkHttpClient().newBuilder()
-        okHttpClientBuilder.addInterceptor(connectionInterceptor)
         okHttpClientBuilder.addInterceptor(interceptor)
-        okHttpClientBuilder.addInterceptor(apiInterceptor)
 
         okHttpClientBuilder
             .connectTimeout(60, TimeUnit.SECONDS)
