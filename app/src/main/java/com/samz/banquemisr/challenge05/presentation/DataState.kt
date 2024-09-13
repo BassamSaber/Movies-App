@@ -5,4 +5,5 @@ data class DataState<out T>(
     val isEmpty: Boolean = false,
     val error: String? = null,
     val data: T? = null,
+    val initialized: Boolean = false
 )

@@ -18,14 +18,10 @@ interface MoviesDao {
     @Query("SELECT * FROM movies WHERE id==:id")
     suspend fun getMovieDetails(id: Int): MovieDto?
 
-    @Query("SELECT * FROM movies WHERE id IN (:ids) ORDER BY autoGenerateKey ASC LIMIT 20")
-    suspend fun getMoviesByIds(ids: List<Int>): List<MovieDto>?
-
-    @Query("SELECT movies.* FROM movies INNER JOIN movie_list_index ON movies.id == movie_list_index.movieId WHERE movie_list_index.movieTypeId=:type ORDER BY autoGenerateKey ASC LIMIT 20")
+    @Query("SELECT movies.* FROM movies INNER JOIN movie_list_index ON movies.id == movie_list_index.movieId WHERE movie_list_index.movieTypeId=:type ORDER BY movie_list_index.id ASC LIMIT 20")
     suspend fun getMoviesByType(type: Int): List<MovieDto>?
 
-
-    @Query("SELECT movies.* FROM movies INNER JOIN movie_list_index ON movies.id == movie_list_index.movieId WHERE movie_list_index.movieTypeId=:type ORDER BY autoGenerateKey ASC")
+    @Query("SELECT movies.* FROM movies INNER JOIN movie_list_index ON movies.id == movie_list_index.movieId WHERE movie_list_index.movieTypeId=:type ORDER BY movie_list_index.id ASC")
     fun pagingSource(type: Int): PagingSource<Int, MovieDto>
 
 

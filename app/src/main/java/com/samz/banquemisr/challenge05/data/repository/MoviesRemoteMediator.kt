@@ -32,7 +32,7 @@ class MoviesRemoteMediator(
                 val pagingInfo = localeDataSource.getMoviesPagingInfo(moviesType)
 
                 val pageNo = pagingInfo?.currentPageNo ?: 0
-                if (pageNo > 5) return MediatorResult.Success(endOfPaginationReached = true)
+//                if (pageNo > 2) return MediatorResult.Success(endOfPaginationReached = true)
 
                 pageNo + 1
             }

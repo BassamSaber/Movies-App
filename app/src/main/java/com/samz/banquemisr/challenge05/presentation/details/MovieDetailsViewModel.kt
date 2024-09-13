@@ -26,7 +26,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     fun loadData(movieId: Int): Job =
         viewModelScope.launch {
-            mutableState.update { it.copy(isLoading = true) }
+            mutableState.update { it.copy(isLoading = true, initialized = true) }
             useCase.execute(movieId).onSuccess { movie ->
                 mutableState.update {
                     it.copy(

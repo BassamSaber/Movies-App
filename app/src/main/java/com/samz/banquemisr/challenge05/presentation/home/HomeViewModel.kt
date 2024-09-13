@@ -27,7 +27,7 @@ class HomeViewModel @Inject constructor(private val useCase: GetMoviesListUseCas
 
     fun loadData(moviesType: MoviesType): Job =
         viewModelScope.launch {
-            mutableState.update { it.copy(isLoading = true) }
+            mutableState.update { it.copy(isLoading = true, initialized = true) }
 
             useCase.execute(moviesType)
                 .onSuccess { moviesList ->

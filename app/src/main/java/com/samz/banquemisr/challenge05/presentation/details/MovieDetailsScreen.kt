@@ -50,12 +50,10 @@ import com.samz.banquemisr.challenge05.presentation.list.HorizontalMoviesList
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MovieDetailsScreen(
-//    viewModel: MovieDetailsViewModel = hiltViewModel(),
     state: DataState<MovieDetailsData>,
     navigate: (movieId: Int) -> Unit = { _ -> },
     popBack: () -> Unit = {}
 ) {
-//    val state: DataState<MovieDetailsData> = viewModel.state.collectAsState().value
 
     Scaffold { paddingValues ->
         Surface(modifier = Modifier.padding(paddingValues)) {

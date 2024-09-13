@@ -20,7 +20,6 @@ import com.samz.banquemisr.challenge05.presentation.details.MovieDetailsViewMode
 import com.samz.banquemisr.challenge05.presentation.home.HomeScreen
 import com.samz.banquemisr.challenge05.presentation.home.HomeViewModel
 import com.samz.banquemisr.challenge05.presentation.home.MainViewModel
-import com.samz.banquemisr.challenge05.presentation.home.MovieIntent
 import com.samz.banquemisr.challenge05.presentation.list.MoviesListScreen
 import com.samz.banquemisr.challenge05.presentation.list.MoviesListViewModel
 import com.samz.banquemisr.challenge05.presentation.theme.MoviesAppTheme
@@ -73,10 +72,6 @@ fun NavController() {
 fun composeHomeScreen(themeChangeViewModel: MainViewModel, navController: NavController) {
     val viewModel: HomeViewModel = hiltViewModel()
 
-    LaunchedEffect(Unit) {
-        viewModel.sendEvent(MovieIntent.LoadNowPlaying)
-    }
-
     HomeScreen(
         appState = themeChangeViewModel.stateApp,
         onMainEvent = { event -> themeChangeViewModel.onEvent(event) },
@@ -95,11 +90,15 @@ fun composeMovieDetails(navController: NavController, arguments: Bundle?) {
     val movieId = arguments?.getInt("movieId") ?: 0
     val viewModel: MovieDetailsViewModel = hiltViewModel()
 
-    LaunchedEffect(movieId) {
-        viewModel.loadData(movieId = movieId)
+    val state = viewModel.state.collectAsState().value
+
+    LaunchedEffect(Unit) {
+        if (!state.initialized)
+            viewModel.loadData(movieId = movieId)
     }
+
     MovieDetailsScreen(
-        viewModel.state.collectAsState().value,
+        state,
         navigate = { newMovieId ->
             navController.navigate("${Screen.MovieDetailsScreen.name}/$newMovieId")
         },
